@@ -8,7 +8,7 @@ dotenv.config();
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   // Configure JSON parser to handle large raw transcripts safely
   app.use(express.json({ limit: "15mb" }));
@@ -17,11 +17,6 @@ async function startServer() {
   const apiKey = process.env.GEMINI_API_KEY;
   const ai = new GoogleGenAI({
     apiKey: apiKey,
-    httpOptions: {
-      headers: {
-        "User-Agent": "aistudio-build",
-      },
-    },
   });
 
   // API endpoint to process the transcript
@@ -35,7 +30,7 @@ async function startServer() {
 
       if (!apiKey) {
         return res.status(500).json({
-          error: "伺服器未檢測到 GEMINI_API_KEY。請回至 AI Studio 的 Settings -> Secrets 面板進行金鑰配置，重啟應用後再試。"
+          error: "伺服器未檢測到 GEMINI_API_KEY。請將 GEMINI_API_KEY 設在環境變數中，並重新啟動伺服器。"
         });
       }
 
